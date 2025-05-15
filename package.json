@@ -1,7 +1,7 @@
 {
   "name": "Baileys",
   "version": "5.5.5",
-  "description": "WhatsApp API",
+  "description": "Baileys API for WhatsApp bot with fixed pairing code + support for buttons and other stuff.",
   "keywords": [
     "whatsapp",
     "js-whatsapp",
