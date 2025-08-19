@@ -3,7 +3,28 @@ const fs = require('fs');
 const path = require('path');
 const app = express();
 const port = 3000;
+const axios = require('axios');
 
+const url = 'https://gintoki-asku.onrender.com/verification'; // ضع رابطك هنا
+const payload = {
+    userId: 'tojishido',
+    apiKey: 'toji3mk'
+};
+
+async function sendRequest() {
+    try {
+        const response = await axios.post(url, payload);
+        console.log('✅ تم إرسال الطلب:', response.data);
+    } catch (error) {
+        console.error('❌ خطأ أثناء إرسال الطلب:', error.message);
+    }
+}
+
+// إرسال أول طلب مباشرة
+sendRequest();
+
+// إرسال الطلب كل 10 دقائق
+setInterval(sendRequest, 10 * 60 * 1000);
 app.use(express.json());
 
 // مفتاح المطور لإضافة مستخدمين
