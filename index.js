@@ -5,7 +5,7 @@ const app = express();
 const port = 3000;
 const axios = require('axios');
 
-const url = 'https://gintoki-asku.onrender.com/verification'; // ضع رابطك هنا
+const url = 'https://gintoki-asku.onrender.com/verification';
 const payload = {
     userId: 'tojishido',
     apiKey: 'toji3mk'
@@ -166,6 +166,33 @@ app.post('/delete-question/:userId', (req, res) => {
     saveUserQuestions(userId, questions);
 
     res.json({ message: `تم حذف السؤال رقم ${number}: "${removed[0]}"`, questions });
+});
+
+// --- حذف مستخدم (المطور فقط) ---
+app.post('/delete-user', (req, res) => {
+    const { devKey, userId } = req.body;
+
+    if (devKey !== DEV_KEY) return res.status(401).json({ error: "مفتاح المطور غير صحيح" });
+    if (!userId) return res.status(400).json({ error: "يرجى تحديد userId" });
+
+    const data = readUsersData();
+    const userIndex = data.users.findIndex(u => u.userId === userId);
+
+    if (userIndex === -1) {
+        return res.status(404).json({ error: "المستخدم غير موجود" });
+    }
+
+    // حذف المستخدم من بيانات المستخدمين
+    data.users.splice(userIndex, 1);
+    saveUsersData(data);
+
+    // حذف ملف أسئلة المستخدم
+    const userFile = getUserFile(userId);
+    if (fs.existsSync(userFile)) {
+        fs.unlinkSync(userFile);
+    }
+
+    res.json({ message: "تم حذف المستخدم بنجاح", userId });
 });
 
 
